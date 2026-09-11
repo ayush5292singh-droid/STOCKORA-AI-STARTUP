@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#081c15">
+  <title>STOCKORA | Business OS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">S</div>
+      <div>
+        <h1>STOCKORA</h1>
+        <span>BUSINESS OS</span>
+      </div>
+    </div>
+
+    <div class="business-online">
+      <i></i> BUSINESS ONLINE
+    </div>
+
+    <nav>
+      <p>OVERVIEW</p>
+      <button class="nav active" data-page="dashboard">⌂ <span>Dashboard</span></button>
+
+      <p>BUSINESS</p>
+      <button class="nav" data-page="inventory">▣ <span>Inventory</span></button>
+      <button class="nav" data-page="scanners">◉ <span>Smart Scanners</span></button>
+      <button class="nav" data-page="pos">▤ <span>POS & Billing</span></button>
+      <button class="nav" data-page="restock">↻ <span>Restock</span></button>
+      <button class="nav" data-page="expenses">₹ <span>Expenses</span></button>
+
+      <p>MANAGEMENT</p>
+      <button class="nav" data-page="sales">▤ <span>Sales History</span></button>
+      <button class="nav" data-page="customers">♙ <span>Customers</span></button>
+      <button class="nav" data-page="suppliers">▱ <span>Suppliers</span></button>
+
+      <p>INTELLIGENCE</p>
+      <button class="nav" data-page="analytics">◔ <span>Analytics</span></button>
+      <button class="nav" data-page="reports">↥ <span>Reports</span></button>
+
+      <p>SYSTEM</p>
+      <button class="nav" data-page="settings">⚙ <span>Settings & Backup</span></button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <small>LOCAL DATA</small>
+      <strong>✓ SAVED</strong>
+      <span>STOCKORA v3.0</span>
+    </div>
+  </aside>
+
+  <main>
+
+    <header class="topbar">
+      <div class="top-left">
+        <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+        <div>
+          <small>BUSINESS CONTROL CENTER</small>
+          <h2 id="pageTitle">Dashboard</h2>
+        </div>
+      </div>
+
+      <div class="top-right">
+        <input id="globalSearch" placeholder="Search products..." oninput="globalSearch()">
+        <button class="bell" onclick="showAlerts()">🔔<b id="alertCount">0</b></button>
+        <div class="profile">
+          <div>S</div>
+          <span id="topBusinessName">My Business</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section class="page active" id="dashboard">
+      <div class="hero">
+        <div>
+          <small>STOCKORA INTELLIGENCE</small>
+          <h2>Run your business smarter.</h2>
+          <p>Inventory, sales, customers and business intelligence in one place.</p>
+        </div>
+        <div class="hero-buttons">
+          <button class="secondary" onclick="openPage('inventory')">View Inventory</button>
+          <button class="primary" onclick="openPage('pos')">🧾 New Sale</button>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span>📦</span><div><small>Total Products</small><h3 id="dProducts">0</h3><p>Products in inventory</p></div></div>
+        <div class="stat"><span>▣</span><div><small>Stock Units</small><h3 id="dStock">0</h3><p>Units available</p></div></div>
+        <div class="stat"><span>₹</span><div><small>Total Revenue</small><h3 id="dRevenue">₹0</h3><p>Completed sales</p></div></div>
+        <div class="stat highlight"><span>↗</span><div><small>Estimated Profit</small><h3 id="dProfit">₹0</h3><p>After product costs</p></div></div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head"><div><small>BUSINESS INTELLIGENCE</small><h3>Business Health</h3></div><strong id="healthLabel">STARTING</strong></div>
+          <div class="health">
+            <div class="score"><b id="healthScore">0</b><span>/100</span></div>
+            <div><h3 id="healthMessage">Add products to begin.</h3><p>Your score considers inventory, sales and low-stock alerts.</p></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div><small>ATTENTION REQUIRED</small><h3>Smart Alerts</h3></div></div>
+          <div id="dashboardAlerts"></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="panel">
+          <div class="panel-head"><div><small>LIVE BUSINESS FEED</small><h3>Recent Activity</h3></div></div>
+          <div id="activityList"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head"><div><small>SALES PERFORMANCE</small><h3>Top Products</h3></div></div>
+          <div id="topProducts"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section class="page" id="inventory">
+      <div class="page-head">
+        <div><small>PRODUCT CONTROL</small><h2>Inventory</h2><p>Manage products, prices and stock levels.</p></div>
+        <button class="primary" onclick="openPage('scanners');selectScanner(2)">+ Add Product</button>
+      </div>
+
+      <div class="toolbar">
+        <input id="inventorySearch" placeholder="Search products..." oninput="renderInventory()">
+        <select id="inventoryFilter" onchange="renderInventory()">
+          <option value="all">All Stock</option>
+          <option value="healthy">Healthy Stock</option>
+          <option value="low">Low Stock</option>
+          <option value="out">Out of Stock</option>
+        </select>
+      </div>
+
+      <div id="inventoryGrid" class="product-grid"></div>
+    </section>
+
+    <!-- SCANNERS -->
+    <section class="page" id="scanners">
+      <div class="page-head">
+        <div><small>STOCKORA SMART TECHNOLOGY</small><h2>Smart Scanners</h2><p>Three connected workflows for your business.</p></div>
+      </div>
+
+      <div class="scanner-tabs">
+        <button class="scanner-tab active" onclick="selectScanner(1)">📷 <b>Scanner 1</b><span>Customer Bill</span></button>
+        <button class="scanner-tab" onclick="selectScanner(2)">📦 <b>Scanner 2</b><span>Add Product</span></button>
+        <button class="scanner-tab" onclick="selectScanner(3)">🧾 <b>Scanner 3</b><span>Bill Maker</span></button>
+      </div>
+
+      <!-- Scanner 1 -->
+      <div class="scanner-view active" id="scanner1">
+        <div class="info">📷 <div><b>Customer Bill Scanner</b><p>Upload the bill photo, match products and deduct stock when confirmed.</p></div></div>
+
+        <div class="scanner-layout">
+          <div class="panel">
+            <h3>Step 1 — Upload Customer Bill</h3>
+            <label class="upload-box">
+              <input type="file" accept="image/*" onchange="previewImage(event,'billPreview')">
+              <div id="billPreviewText">📄<br><b>Upload Bill Photo</b><br><small>Choose from your device</small></div>
+              <img id="billPreview">
+            </label>
+          </div>
+
+          <div class="panel">
+            <h3>Step 2 — Match Sold Products</h3>
+            <div id="billRows"></div>
+            <button class="secondary" onclick="addBillRow()">+ Add Product</button>
+            <div class="total-box">Estimated Sale <b id="billTotal">₹0</b></div>
+            <button class="primary full" onclick="completeBillScan()">✓ Confirm Sale & Deduct Stock</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scanner 2 -->
+      <div class="scanner-view" id="scanner2">
+        <div class="info">📦 <div><b>Smart Product Scanner</b><p>Upload a product image and save it directly into your inventory.</p></div></div>
+
+        <div class="scanner-layout product-layout">
+          <div class="panel">
+            <h3>Product Photo</h3>
+            <label class="upload-box">
+              <input type="file" accept="image/*" onchange="previewImage(event,'productPreview')">
+              <div id="productPreviewText">📸<br><b>Upload Product Image</b><br><small>Choose from gallery</small></div>
+              <img id="productPreview">
+            </label>
+          </div>
+
+          <div class="panel">
+            <h3>Add To Inventory</h3>
+            <div class="form-grid">
+              <label>Product Name*<input id="pName"></label>
+              <label>Category<input id="pCategory"></label>
+              <label>SKU<input id="pSKU"></label>
+              <label>Barcode<input id="pBarcode"></label>
+              <label>Starting Stock*<input id="pStock" type="number" min="0"></label>
+              <label>Minimum Stock<input id="pMin" type="number" value="5"></label>
+              <label>Cost Price ₹<input id="pCost" type="number" min="0"></label>
+              <label>Selling Price ₹*<input id="pPrice" type="number" min="0"></label>
+              <label>Supplier<select id="pSupplier"></select></label>
+              <label>Expiry Date<input id="pExpiry" type="date"></label>
+              <label class="wide">Shelf Location<input id="pLocation"></label>
+              <label class="wide">Notes<textarea id="pNotes"></textarea></label>
+            </div>
+            <button class="primary full" onclick="addProduct()">+ Add Product To STOCKORA</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scanner 3 -->
+      <div class="scanner-view" id="scanner3">
+        <div class="info">🧾 <div><b>Smart Bill Maker</b><p>Select products and STOCKORA automatically uses their stored prices.</p></div></div>
+
+        <div class="scanner-layout">
+          <div class="panel">
+            <h3>Create Professional Bill</h3>
+
+            <div class="form-grid">
+              <label>Customer Name<input id="s3Customer" placeholder="Walk-in Customer"></label>
+              <label>Phone<input id="s3Phone"></label>
+            </div>
+
+            <h4>PRODUCTS</h4>
+            <div id="s3Rows"></div>
+            <button class="secondary" onclick="addS3Row()">+ Add Product</button>
+
+            <div class="form-grid">
+              <label>Discount ₹<input id="s3Discount" type="number" value="0" oninput="calculateS3()"></label>
+              <label>GST / Tax %<input id="s3Tax" type="number" value="0" oninput="calculateS3()"></label>
+              <label>Payment<select id="s3Payment"><option>Cash</option><option>UPI</option><option>Card</option></select></label>
+            </div>
+
+            <div class="bill-summary">
+              <p>Subtotal <b id="s3Subtotal">₹0</b></p>
+              <p>Discount <b id="s3DiscountAmount">₹0</b></p>
+              <p>Tax <b id="s3TaxAmount">₹0</b></p>
+              <h3>GRAND TOTAL <b id="s3Grand">₹0</b></h3>
+            </div>
+
+            <button class="primary full" onclick="completeS3()">🧾 Complete Sale & Generate Invoice</button>
+          </div>
+
+          <div class="panel invoice-panel">
+            <div id="invoicePreview" class="invoice-empty">🧾<h3>Professional Invoice</h3><p>Your completed invoice will appear here.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- POS -->
+    <section class="page" id="pos">
+      <div class="page-head"><div><small>POINT OF SALE</small><h2>Quick Checkout</h2><p>Create fast sales using live inventory.</p></div></div>
+
+      <div class="pos-layout">
+        <div class="panel">
+          <input id="posSearch" placeholder="Search products..." oninput="renderPOSProducts()">
+          <div class="pos-products" id="posProducts"></div>
+        </div>
+
+        <div class="panel cart-panel">
+          <div class="panel-head"><h3>Current Cart</h3><button class="danger-link" onclick="clearCart()">Clear</button></div>
+          <div id="cart"></div>
+          <input id="posCustomer" placeholder="Customer name">
+          <input id="posPhone" placeholder="Phone">
+          <select id="posPayment"><option>Cash</option><option>UPI</option><option>Card</option></select>
+          <div class="cart-total">TOTAL <b id="cartTotal">₹0</b></div>
+          <button class="primary full" onclick="completePOS()">Complete Sale</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESTOCK -->
+    <section class="page" id="restock">
+      <div class="page-head"><div><small>PURCHASE MANAGEMENT</small><h2>Restock Inventory</h2><p>Add incoming stock and maintain records.</p></div></div>
+      <div class="two-col">
+        <div class="panel">
+          <h3>Add New Stock</h3>
+          <label>Product<select id="restockProduct"></select></label>
+          <div class="form-grid">
+            <label>Quantity Added<input id="restockQty" type="number"></label>
+            <label>Cost Per Unit ₹<input id="restockCost" type="number"></label>
+          </div>
+          <label>Supplier<select id="restockSupplier"></select></label>
+          <label>Notes<textarea id="restockNotes"></textarea></label>
+          <button class="primary full" onclick="restock()">+ Add Stock</button>
+        </div>
+
+        <div class="panel">
+          <h3>Recent Restocks</h3>
+          <div id="restockHistory"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPENSES -->
+    <section class="page" id="expenses">
+      <div class="page-head"><div><small>FINANCIAL CONTROL</small><h2>Business Expenses</h2><p>Track spending and understand your business.</p></div><button class="primary" onclick="toggle('expenseForm')">+ Add Expense</button></div>
+
+      <div class="panel hidden" id="expenseForm">
+        <div class="form-grid">
+          <label>Expense Name<input id="expenseName"></label>
+          <label>Category<select id="expenseCategory"><option>Rent</option><option>Electricity</option><option>Salary</option><option>Transport</option><option>Supplies</option><option>Other</option></select></label>
+          <label>Amount ₹<input id="expenseAmount" type="number"></label>
+          <label>Date<input id="expenseDate" type="date"></label>
+        </div>
+        <button class="primary" onclick="addExpense()">Save Expense</button>
+      </div>
+
+      <div class="stats one-row">
+        <div class="stat"><span>₹</span><div><small>Total Expenses</small><h3 id="expenseTotal">₹0</h3></div></div>
+      </div>
+      <div class="panel" id="expenseList"></div>
+    </section>
+
+    <!-- SALES -->
+    <section class="page" id="sales">
+      <div class="page-head"><div><small>TRANSACTION DATABASE</small><h2>Sales History</h2><p>Every completed sale is saved.</p></div></div>
+      <div class="panel table-wrap">
+        <table>
+          <thead><tr><th>Invoice</th><th>Date</th><th>Customer</th><th>Items</th><th>Payment</th><th>Total</th></tr></thead>
+          <tbody id="salesTable"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- CUSTOMERS -->
+    <section class="page" id="customers">
+      <div class="page-head"><div><small>CUSTOMER RELATIONSHIP</small><h2>Customers</h2></div><button class="primary" onclick="toggle('customerForm')">+ Add Customer</button></div>
+      <div class="panel hidden" id="customerForm">
+        <div class="form-grid">
+          <label>Name<input id="customerName"></label>
+          <label>Phone<input id="customerPhone"></label>
+          <label>Email<input id="customerEmail"></label>
+        </div>
+        <button class="primary" onclick="addCustomer()">Save Customer</button>
+      </div>
+      <div id="customerList" class="management-grid"></div>
+    </section>
+
+    <!-- SUPPLIERS -->
+    <section class="page" id="suppliers">
+      <div class="page-head"><div><small>SUPPLY NETWORK</small><h2>Suppliers</h2></div><button class="primary" onclick="toggle('supplierForm')">+ Add Supplier</button></div>
+      <div class="panel hidden" id="supplierForm">
+        <div class="form-grid">
+          <label>Name<input id="supplierName"></label>
+          <label>Company<input id="supplierCompany"></label>
+          <label>Phone<input id="supplierPhone"></label>
+          <label>Email<input id="supplierEmail"></label>
+        </div>
+        <button class="primary" onclick="addSupplier()">Save Supplier</button>
+      </div>
+      <div id="supplierList" class="management-grid"></div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section class="page" id="analytics">
+      <div class="page-head"><div><small>BUSINESS INTELLIGENCE</small><h2>Analytics</h2><p>Understand business performance.</p></div></div>
+      <div class="stats">
+        <div class="stat"><span>₹</span><div><small>Total Revenue</small><h3 id="aRevenue">₹0</h3></div></div>
+        <div class="stat"><span>📦</span><div><small>Inventory Value</small><h3 id="aInventory">₹0</h3></div></div>
+        <div class="stat"><span>💸</span><div><small>Expenses</small><h3 id="aExpenses">₹0</h3></div></div>
+        <div class="stat highlight"><span>↗</span><div><small>Net Profit</small><h3 id="aProfit">₹0</h3></div></div>
+      </div>
+      <div class="two-col">
+        <div class="panel"><h3>Top Selling Products</h3><div id="analyticsProducts"></div></div>
+        <div class="panel"><h3>Sales By Payment</h3><div id="paymentStats"></div></div>
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section class="page" id="reports">
+      <div class="page-head"><div><small>BUSINESS REPORTING</small><h2>Reports</h2></div></div>
+      <div class="report-grid">
+        <div class="panel report"><span>📦</span><h3>Inventory Report</h3><p>Products and stock levels.</p><button class="secondary" onclick="downloadReport('inventory')">Download CSV</button></div>
+        <div class="panel report"><span>💰</span><h3>Sales Report</h3><p>Complete sales history.</p><button class="secondary" onclick="downloadReport('sales')">Download CSV</button></div>
+        <div class="panel report"><span>💸</span><h3>Expense Report</h3><p>Business spending summary.</p><button class="secondary" onclick="downloadReport('expenses')">Download CSV</button></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="page" id="settings">
+      <div class="page-head"><div><small>STOCKORA SYSTEM</small><h2>Settings & Backup</h2></div></div>
+
+      <div class="settings-grid">
+        <div class="panel">
+          <small>BUSINESS PROFILE</small><h3>Business Information</h3>
+          <label>Business Name<input id="businessName"></label>
+          <label>Address<textarea id="businessAddress"></textarea></label>
+          <label>Phone<input id="businessPhone"></label>
+          <button class="primary" onclick="saveSettings()">Save Settings</button>
+        </div>
+
+        <div class="panel">
+          <small>DATA PROTECTION</small><h3>Backup Your Business</h3>
+          <p>Download all your local STOCKORA data.</p>
+          <button class="primary full" onclick="exportData()">📤 Download Full Backup</button>
+          <label class="import-btn">📥 Restore Backup<input type="file" accept=".json" onchange="importData(event)"></label>
+        </div>
+
+        <div class="panel danger-zone">
+          <small>DANGER ZONE</small><h3>Reset STOCKORA</h3>
+          <p>Permanently remove all local data.</p>
+          <button class="danger full" onclick="resetData()">⚠ Reset All Data</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
